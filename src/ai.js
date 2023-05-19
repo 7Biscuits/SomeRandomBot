@@ -1,5 +1,4 @@
 const { Configuration, OpenAIApi } = require('openai');
-const fs = require('fs');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -75,7 +74,7 @@ async function chat(input) {
     const response = await fetch(
         'https://api-inference.huggingface.co/models/microsoft/DialoGPT-large', 
         {
-            headers: { Authorization: `Bearer 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` },
+            headers: { Authorization: `Bearer ${process.env.HUGGINGFACE_TOKEN}` },
             method: "POST",
             body: JSON.stringify(payload),
         }
@@ -89,5 +88,5 @@ module.exports = {
     generate_image,
     moderation,
     fill_mask,
-    chat
+    chat,
 }

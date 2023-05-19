@@ -1,11 +1,17 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const  { chat } = require('./ai.js')
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.GuildMembers,
+	GatewayIntentBits.MessageContent
+] });
 
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
@@ -27,6 +33,17 @@ for (const folder of commandFolders) {
 
 client.once(Events.ClientReady, () => {
 	console.log('Ready!');
+});
+
+client.on('messageCreate', async (message) => {
+	try {
+		if (message.author.bot) return;
+
+		const reply = await chat(message.content);
+		await message.reply(reply);
+	} catch (err) {
+		await message.reply(err.message);
+	}
 });
 
 client.on(Events.InteractionCreate, async interaction => {
