@@ -62,6 +62,20 @@ async function fill_mask(input) {
     return await response.json()[0].sequence;
 }
 
+async function chat_openai(prompt) {
+    const response = await openai.createCompletion({
+        prompt: prompt,
+        model: "text-davinci-003",
+        max_tokens: 256,
+        temperature: 0.3,
+        top_p: 0.3,
+        presence_penalty: 0,
+        frequency_penalty: 0.5,
+    });
+
+    return response.data.choices[0].text;
+}
+
 async function chat(input) {
     const payload = {
         inputs: {
@@ -89,4 +103,5 @@ module.exports = {
     moderation,
     fill_mask,
     chat,
+    chat_openai,
 }
